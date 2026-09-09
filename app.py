@@ -1,3 +1,13 @@
+import os
+
+# 1. PEHLE ENVIRONMENT VARIABLES SET KAREIN
+os.environ['SDL_VIDEODRIVER'] = 'dummy'
+os.environ['SDL_AUDIODRIVER'] = 'dummy'
+
+# 2. PHIR PYGAME IMPORT KAREIN
+import pygame
+
+
 import pandas as pd
 import streamlit as st
 from sklearn.compose import ColumnTransformer
