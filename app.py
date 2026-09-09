@@ -1,20 +1,13 @@
 import os
 
-# 1. PEHLE ENVIRONMENT VARIABLES SET KAREIN
+# 1. Environment variables set for headless execution
 os.environ['SDL_VIDEODRIVER'] = 'dummy'
 os.environ['SDL_AUDIODRIVER'] = 'dummy'
 
-# 2. PHIR PYGAME IMPORT KAREIN
-import pygame
-
-
+# 2. Imports
+import joblib
 import pandas as pd
 import streamlit as st
-from sklearn.compose import ColumnTransformer
-from sklearn.impute import SimpleImputer
-from sklearn.pipeline import Pipeline
-from sklearn.preprocessing import OneHotEncoder
-from sklearn.tree import DecisionTreeClassifier
 
 # Page setup
 st.set_page_config(
@@ -28,43 +21,13 @@ st.write(
 )
 
 
-# Load and train the Decision Tree model
+# Load saved model.pkl file
 @st.cache_resource
-def load_and_train_model():
-  df = pd.read_csv("loan_approval_data.csv").dropna(subset=["Loan_Approved"])
-  X = df.drop(columns=["Applicant_ID", "Loan_Approved"])
-  y = df["Loan_Approved"].map({"Yes": 1, "No": 0})
-
-  num_cols = X.select_dtypes(include=["float64", "int64"]).columns.tolist()
-  cat_cols = X.select_dtypes(include=["object"]).columns.tolist()
-
-  num_transformer = SimpleImputer(strategy="median")
-  cat_transformer = Pipeline(
-      steps=[
-          ("imputer", SimpleImputer(strategy="most_frequent")),
-          ("onehot", OneHotEncoder(handle_unknown="ignore")),
-      ]
-  )
-
-  preprocessor = ColumnTransformer(
-      transformers=[
-          ("num", num_transformer, num_cols),
-          ("cat", cat_transformer, cat_cols),
-      ]
-  )
-
-  model = Pipeline(
-      steps=[
-          ("preprocessor", preprocessor),
-          ("classifier", DecisionTreeClassifier(max_depth=4, random_state=42)),
-      ]
-  )
-
-  model.fit(X, y)
-  return model, df
+def load_model():
+  return joblib.load('model.pkl')
 
 
-model, df = load_and_train_model()
+model = load_model()
 
 # User Input Form (Sidebar)
 st.sidebar.header("📋 Applicant Form")
@@ -84,7 +47,9 @@ coapplicant_income = st.sidebar.number_input(
 loan_amount = st.sidebar.number_input(
     "Loan Amount ($)", min_value=0, value=15000, step=1000
 )
-loan_term = st.sidebar.selectbox("Loan Term (Months)", options=[12, 24, 36, 60, 120, 360], index=3)
+loan_term = st.sidebar.selectbox(
+    "Loan Term (Months)", options=[12, 24, 36, 60, 120, 360], index=3
+)
 age = st.sidebar.slider("Age", 18, 100, 35)
 dependents = st.sidebar.selectbox("Dependents", [0, 1, 2, 3, 4, 5])
 existing_loans = st.sidebar.selectbox("Existing Loans", [0, 1, 2, 3, 4, 5])
@@ -96,12 +61,18 @@ collateral_value = st.sidebar.number_input(
 employment_status = st.sidebar.selectbox(
     "Employment Status", ["Salaried", "Self-employed", "Unemployed"]
 )
-marital_status = st.sidebar.selectbox("Marital Status", ["Single", "Married", "Divorced"])
+marital_status = st.sidebar.selectbox(
+    "Marital Status", ["Single", "Married", "Divorced"]
+)
 loan_purpose = st.sidebar.selectbox(
     "Loan Purpose", ["Personal", "Car", "Business", "Education", "Home"]
 )
-property_area = st.sidebar.selectbox("Property Area", ["Urban", "Semiurban", "Rural"])
-education_level = st.sidebar.selectbox("Education Level", ["Graduate", "Not Graduate"])
+property_area = st.sidebar.selectbox(
+    "Property Area", ["Urban", "Semiurban", "Rural"]
+)
+education_level = st.sidebar.selectbox(
+    "Education Level", ["Graduate", "Not Graduate"]
+)
 gender = st.sidebar.selectbox("Gender", ["Male", "Female"])
 employer_category = st.sidebar.selectbox(
     "Employer Category", ["Private", "Government", "MNC", "Business"]
@@ -139,11 +110,14 @@ with col1:
     probability = model.predict_proba(input_data)[0][1]
 
     if prediction == 1:
-      st.success(f"✅ **Loan Approved!**\n\nProbability: `{probability*100:.1f}%`")
+      st.success(
+          f"✅ **Loan Approved!**\n\nProbability: `{probability*100:.1f}%`"
+      )
     else:
-      st.error(f"❌ **Loan Rejected.**\n\nProbability: `{probability*100:.1f}%`")
+      st.error(
+          f"❌ **Loan Rejected.**\n\nProbability: `{probability*100:.1f}%`"
+      )
 
 with col2:
-  st.subheader("📊 Dataset Overview")
-  st.write(f"Dataset Rows: `{len(df)}`")
-  st.dataframe(df.head(5), height=220)
+  st.subheader("📊 Model Status")
+  st.info("Model successfully loaded from `model.pkl`.")
