@@ -1,0 +1,41 @@
+# CreditWise Loan System
+
+## Overview
+SecureTrust Bank, a mid-sized financial company offering personal and home loans across urban and rural regions of India, is updating its workflow with an automated machine learning system[cite: 1]. 
+
+The previous manual verification process required loan officers to evaluate applications by checking income proofs, employment details, credit histories, and other documents[cite: 1]. This approach was time-consuming, inconsistent, and biased, resulting in two core problems[cite: 1]:
+1. Good customers were rejected, leading to loss of business[cite: 1].
+2. High-risk customers were approved, causing financial losses[cite: 1].
+
+The **CreditWise Loan System** automatically analyzes applicant details and predicts whether a loan should be Approved or Rejected before final human verification[cite: 1].
+
+---
+
+## Dataset Overview
+
+Each row in the dataset represents a loan applicant and contains personal, financial, and credit attributes[cite: 1]:
+
+| Column | Description |
+| :--- | :--- |
+| `Applicant_ID` | Unique applicant ID[cite: 1] |
+| `Applicant_Income` | Monthly income of applicant[cite: 1] |
+| `Coapplicant_Income` | Monthly income of co-applicant[cite: 1] |
+| `Employment_Status` | Salaried / Self-Employed / Business[cite: 1] |
+| `Age` | Applicant age[cite: 1] |
+| `Marital_Status` | Married / Single[cite: 1] |
+| `Dependents` | Number of dependents[cite: 1] |
+| `Credit_Score` | Credit bureau score[cite: 1] |
+| `Existing_Loans` | Number of already running loans[cite: 1] |
+| `DTI_Ratio` | Debt-to-Income ratio[cite: 1] |
+| `Savings` | Savings balance[cite: 1] |
+| `Collateral_Value` | Value of collateral provided[cite: 1] |
+| `Loan_Amount` | Loan amount requested[cite: 1] |
+| `Loan_Term` | Loan duration (months)[cite: 1] |
+| `Loan_Purpose` | Home / Education / Personal / Business[cite: 1] |
+| `Property_Area` | Urban / Semi-Urban / Rural[cite: 1] |
+| `Education_Level` | Graduate / Postgraduate / Undergraduate[cite: 1] |
+| `Gender` | Male / Female[cite: 1] |
+| `Employer_Category` | Govt / Private / Self[cite: 1] |
+| **`Loan_Approved`** | **Target: 1 = Approved, 0 = Rejected**[cite: 1] |
+
+---
